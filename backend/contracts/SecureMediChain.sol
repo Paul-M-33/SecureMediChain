@@ -12,11 +12,13 @@ contract DataMediChain is Ownable {
 
     struct PrescriptionData {
         bytes32 prescriptionHash;
-        bool hasBeenProcessed; // replace with a counter to manage reutilisable prescriptions ?
+        string prescriptionSignature;
+        bool hasBeenProcessed;
         bool prescriptionExist;
     }
 
-    mapping (address => PrescriptionData) public prescriptions;
+    /* mapping between keccack 256 hash of the patient private key, and his prescription data */
+    mapping (bytes32 => PrescriptionData) public prescriptions;
 
     mapping (address => bool) public doctors;
 
@@ -56,27 +58,27 @@ contract DataMediChain is Ownable {
         pharmacists[_pharmacistAddress] = false;
     }
 
-    function createNewPrescriptionData(address _patientAddress, bytes32 _prescriptionHash) external onlyDoctors {
+    function createNewPrescriptionData(bytes32 _patientKeyHash, string memory _prescriptionSignature, bytes32 _prescriptionHash) external onlyDoctors {
         PrescriptionData memory prescriptionData;
         prescriptionData.prescriptionHash = _prescriptionHash;
+        prescriptionData.prescriptionSignature = _prescriptionSignature;
         prescriptionData.hasBeenProcessed = false;
         prescriptionData.prescriptionExist = true;
-        prescriptions[_patientAddress] = prescriptionData;
+        prescriptions[_patientKeyHash] = prescriptionData;
     }
 
-    function getPrescriptionData(address _patientAddress) external onlyDoctorsOrPharmacists view returns (PrescriptionData memory) {
-        require(prescriptions[_patientAddress].prescriptionExist, "This prescription does not exist");
-        return prescriptions[_patientAddress];
+    function getPrescriptionData(bytes32 _patientKeyHash) external onlyDoctorsOrPharmacists view returns (PrescriptionData memory) {
+        require(prescriptions[_patientKeyHash].prescriptionExist, "This prescription does not exist");
+        return prescriptions[_patientKeyHash];
     }
 
-    function setPrescriptionAsProcessed(address _patientAddress) external onlyPharmacists {
-        require(prescriptions[_patientAddress].prescriptionExist, "This prescription does not exist");
-        require(!prescriptions[_patientAddress].hasBeenProcessed, "This prescription has already been processed");
-        prescriptions[_patientAddress].hasBeenProcessed = true;
+    function setPrescriptionAsProcessed(bytes32 _patientKeyHash) external onlyPharmacists {
+        require(prescriptions[_patientKeyHash].prescriptionExist, "This prescription does not exist");
+        require(!prescriptions[_patientKeyHash].hasBeenProcessed, "This prescription has already been processed");
+        prescriptions[_patientKeyHash].hasBeenProcessed = true;
     }
 }
 
 /* TODO : data accessibility ? private ? */
 /* TODO : manage multiple prescriptions for a given patient ? array of prescriptions ? */
-/* TODO : also store signature in BC ? */
-/* TODO : store a private data instead of the public key to avoid identity usurpation ? */
+/* TODO : timeout of prescription validity ? */
