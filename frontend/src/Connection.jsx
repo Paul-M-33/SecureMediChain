@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Typography, Box } from '@mui/material';
+import { Button, Typography, Box, CardContent, Card } from '@mui/material';
 const ethers = require("ethers");
 
 function Web3ConnectionButton() {
@@ -20,15 +20,28 @@ function Web3ConnectionButton() {
   }
 
   return (
-    <Box sx={{ my: 4 }}>
-      <Button variant="contained" onClick={connectWallet}>
+    <Box sx={{ my: 4, textAlign: 'center' }}>
+      <Button
+        variant="contained"
+        onClick={connectWallet}
+        sx={{ mb: 2, backgroundColor: '#1976d2', color: '#fff', '&:hover': { backgroundColor: '#1565c0' } }}
+      >
         {connected ? "Disconnect Wallet" : "Connect Wallet"}
       </Button>
       {walletAddress && (
-        <>
-          <Typography variant="h6">Connected address is:</Typography>
-          <Typography variant="body1">{walletAddress}</Typography>
-        </>
+        <Card sx={{ maxWidth: 500, mx: 'auto', backgroundColor: '#e3f2fd', mt: 2 }}>
+          <CardContent>
+            <Typography variant="h6" component="div" gutterBottom>
+              🎉 Connected Successfully! 🎉
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Your wallet address:
+            </Typography>
+            <Typography variant="body1" sx={{ wordWrap: 'break-word', fontWeight: 'bold', color: '#1a237e' }}>
+              {walletAddress}
+            </Typography>
+          </CardContent>
+        </Card>
       )}
     </Box>
   );

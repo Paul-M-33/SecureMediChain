@@ -4,8 +4,8 @@ import { TextField, Button, Box, MenuItem, Typography } from '@mui/material';
 function OwnerActions() {
     const [roleToAdd, setRoleToAdd] = useState('');
     const [keyStringValue, setKeyStringValue] = useState('');
-    const [doctorPublicKey, setdoctorPublicKey] = useState('');
-    const [pharmacistPublicKey, setpharmacistPublicKey] = useState('');
+    const [newDoctorPublicKey, setNewDoctorPublicKey] = useState('');
+    const [newPharmacistPublicKey, setNewPharmacistPublicKey] = useState('');
 
     const handleRoleChange = (event) => {
         const newRole = event.target.value;
@@ -21,10 +21,10 @@ function OwnerActions() {
     const handleButtonClick = () => {
         if (keyStringValue) {
             if (roleToAdd === 'Doctor') {
-                setdoctorPublicKey(keyStringValue);
+              setNewDoctorPublicKey(keyStringValue);
             }
             else if (roleToAdd === 'Pharmacist') {
-                setpharmacistPublicKey(keyStringValue);
+              setNewPharmacistPublicKey(keyStringValue);
             }
             // TOTO : send the key just added to BC
         }
@@ -40,7 +40,7 @@ function OwnerActions() {
         onChange={handleRoleChange}
         fullWidth
         margin="normal"
-        sx={{ width: '50%' }} // Set width to 50% of its container
+        sx={{ width: '50%' }}
       >
         <MenuItem value="Doctor">Add Doctor</MenuItem>
         <MenuItem value="Pharmacist">Add Pharmacist</MenuItem>
