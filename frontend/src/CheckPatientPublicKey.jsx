@@ -34,6 +34,7 @@ function CheckPatientPublicKey({ setRdmNumber, patientPublicKey, setPatientPubli
   const CheckPatientSignature = () => {
     try {
       const patientPublicKeySigner = EthCrypto.recoverPublicKey(textArea, hashChallenge);
+      /* TODO : add 0x to patientPublicKeySigner to be consistent with other key/addresses passed */
 
       if (patientPublicKey !== patientPublicKeySigner) {
         setAlertMessage(<Alert severity="error">Signature verification failed. The verification does not match the patient's public key!</Alert>);

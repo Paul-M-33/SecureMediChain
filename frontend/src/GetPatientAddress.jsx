@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { Typography, TextField, Button, Box } from '@mui/material';
 
-const EthCrypto = require('eth-crypto');
-
-function GetDoctorPrivateKey({ setDotorPrivateKey }) {
+function GetPatientAddress({ setPatientAddress }) {
   const [textArea, setTextArea] = useState('');
 
   const handleTextChange = (event) => {
@@ -11,31 +9,27 @@ function GetDoctorPrivateKey({ setDotorPrivateKey }) {
   };
 
   const handleButtonClick = () => {
-    setDotorPrivateKey(textArea);
-    console.log("Doctor public key from private key");
-    let pubk = EthCrypto.publicKeyByPrivateKey(textArea);
-    console.log(pubk);
+    setPatientAddress(textArea);
   };
 
   return (
     <Box sx={{ my: 4, backgroundColor: '#fff', padding: '20px', borderRadius: '5px' }}>
       <Typography variant="h6" gutterBottom>
-        Enter Your Private Key:
+        Enter Patient address:
       </Typography>
       <TextField
-        type="password"
         value={textArea}
         onChange={handleTextChange}
         fullWidth
         margin="normal"
         variant="outlined"
-        placeholder="Enter your private key"
+        placeholder="Enter patient address"
       />
       <Button variant="contained" onClick={handleButtonClick} sx={{ mt: 2 }}>
-        Send your private key (secured)
+        Send patient address
       </Button>
     </Box>
   );
 }
 
-export default GetDoctorPrivateKey;
+export default GetPatientAddress;

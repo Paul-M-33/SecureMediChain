@@ -1,37 +1,73 @@
+import { useContractActions } from './ContractActionsComponent';
 import React, { useState } from 'react';
 import { Typography, Button, Box, Alert } from '@mui/material';
+import { prescriptionData } from './ContractActionsComponent';
 import * as futils from './utils'
 
 const EthCrypto = require("eth-crypto");
 
-function VerifyPrescriptionData({ imageString, doctorPublicKey, prescriptionHashBC, prescriptionSignatureBC, setPrescriptionValid }) {
+export let patientAddressExported = null;
+
+function VerifyPrescriptionData({ imageString, doctorPublicKey, setPrescriptionValid, patientPublicKey }) {
+
+  const { getPrescriptionData } = useContractActions();
   const [alertMessage, setAlertMessage] = useState(null);
 
-  const HandlePatientDataVerification = () => {
+  const HandlePatientDataVerification = async () => {
 
     let prescriptionValid = true;
     setPrescriptionValid(false);
-    
-    const prescriptionHashPharmaSide = EthCrypto.hash.keccak256(futils.arrayBufferToHex(imageString));
 
-    // check hash
-    if (prescriptionHashBC !== prescriptionHashPharmaSide) {
-      setAlertMessage(<Alert severity="error">Hash verification failed. Prescription has been modified!</Alert>);
-      prescriptionValid = false;
+    // patient public key => address for blockchain call :
+    const patientAddress = EthCrypto.publicKey.toAddress(patientPublicKey);
+    patientAddressExported = patientAddress;
+
+    await getPrescriptionData(patientAddress);
+
+    let prescriptionHashBC = prescriptionData[0];
+    let prescriptionSignatureBC = prescriptionData[1];
+    let hasBeenProcessed = prescriptionData[2];
+    let prescriptionExist = prescriptionData[3];
+
+    // loop to use break instructions to display the valid error message when needed
+    for (let i = 0; i < 1; i++) {
+
+      if (!prescriptionExist) {
+        setAlertMessage(<Alert severity="error">No prescription found for this patient address !</Alert>);
+        prescriptionValid = false;
+        break;
+      }
+
+      if (hasBeenProcessed) {
+        setAlertMessage(<Alert severity="error">Prescription has already been delivered !</Alert>);
+        prescriptionValid = false;
+        break;
+      }
+      
+      const prescriptionHashPharmaSide = EthCrypto.hash.keccak256(futils.arrayBufferToHex(imageString));
+
+      console.log("hash computed pharam side :"+prescriptionHashPharmaSide);
+
+      // check hash
+      if (prescriptionHashBC !== prescriptionHashPharmaSide) {
+        setAlertMessage(<Alert severity="error">Hash verification failed. Prescription has been modified!</Alert>);
+        prescriptionValid = false;
+        break;
+      }
+
+      const signerPublicKey = EthCrypto.recoverPublicKey(prescriptionSignatureBC, prescriptionHashPharmaSide);
+
+      // check prescription signature
+      if (signerPublicKey !== doctorPublicKey) {
+        setAlertMessage(<Alert severity="error">Signature verification failed. Prescription wasn't made by a doctor!</Alert>);
+        prescriptionValid = false;
+        break;
+      }
     }
-
-    const signerPublicKey = EthCrypto.recoverPublicKey(prescriptionSignatureBC, prescriptionHashPharmaSide);
-
-    // check prescription signature
-    if (signerPublicKey !== doctorPublicKey) {
-      setAlertMessage(<Alert severity="error">Signature verification failed. Prescription wasn't made by a doctor!</Alert>);
-      prescriptionValid = false;
-    }
-
-    setAlertMessage(<Alert severity="success">Prescription is valid!</Alert>);
     
     if (prescriptionValid) {
       setPrescriptionValid(true);
+      setAlertMessage(<Alert severity="success">Prescription is valid!</Alert>);
     }
   };
 

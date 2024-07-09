@@ -1,40 +1,53 @@
-import React, {useState} from 'react';
-import { Typography, Button, Box, Alert } from '@mui/material';
-import * as futils from './utils'
+import { useContractActions } from './ContractActionsComponent';
+import React, { useState } from 'react';
+import { Typography, Button, Box } from '@mui/material';
+import * as futils from './utils';
+import MessageDialog from './MessageDialog';
 
 const EthCrypto = require("eth-crypto");
 
-function SignAndHashFile({ imageString, doctorPrivK, setPrescriptionSigned, setPrescriptionHash }) {
+function SignAndHashFile({ imageString, doctorPrivK, setPrescriptionSigned, setPrescriptionHash, patientAddress }) {
 
-  const [isDone, setIsDone] = useState(false);
+  const { createNewPrescriptionData } = useContractActions();
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogTitle, setDialogTitle] = useState('');
+  const [dialogMessage, setDialogMessage] = useState('');
+  const [dialogType, setDialogType] = useState('success');
 
-  const handleSignAndHashClick = () => {
+  const handleSignAndHashClick = async () => {
     if (imageString && doctorPrivK) {
       const privateKey = doctorPrivK.toString("hex");
       const hash = EthCrypto.hash.keccak256(futils.arrayBufferToHex(imageString));
       const signature = EthCrypto.sign(privateKey, hash);
 
+      /* TODO : we can remove these lines as signature and hash are sent straight to blockchain */
       setPrescriptionSigned(signature);
       setPrescriptionHash(hash);
 
-      setIsDone(true);
-      setTimeout(() => setIsDone(false), 3000); // Hide "Done" message after 3 seconds
+      try {
+        await createNewPrescriptionData(patientAddress, signature, hash);
+        showDialog('success', 'Success', 'Hash and signature sent to blockchain successfully.');
+      } catch (error) {
+        showDialog('error', 'Error', `Error sending hash and signature to blockchain: ${error.message}`);
+      }
     }
+  };
+
+  const showDialog = (type, title, message) => {
+    setDialogType(type);
+    setDialogTitle(title);
+    setDialogMessage(message);
+    setDialogOpen(true);
   };
 
   return (
     <Box sx={{ my: 4, backgroundColor: '#fff', padding: '20px', borderRadius: '5px' }}>
       <Button variant="contained" onClick={handleSignAndHashClick}>
-        <Typography variant="button">Hash and Sign Prescription</Typography>
+        <Typography variant="button">Send to Blockchain Hash and Signature Prescription</Typography>
       </Button>
-      {isDone && (
-        <Box sx={{ mt: 2 }}>
-          <Alert severity="success">Done</Alert>
-        </Box>
-      )}
+      <MessageDialog open={dialogOpen} onClose={() => setDialogOpen(false)} title={dialogTitle} message={dialogMessage} type={dialogType} />
     </Box>
   );
-
 }
 
 export default SignAndHashFile;

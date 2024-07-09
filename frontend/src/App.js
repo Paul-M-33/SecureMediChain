@@ -4,6 +4,7 @@ import Web3ConnectionButton from './Connection';
 import UploadFile from './UploadFile';
 import GetDoctorPublicKey from './GetDoctorPublicKey';
 import GetDoctorPrivateKey from './GetDoctorPrivateKey';
+import GetPatientAddress from './GetPatientAddress';
 import GetPatientPublicKey from './GetPatientPublicKey';
 import SignAndHashFile from './SignAndHashPrescription';
 import RoleDropdown from './SelectRole';
@@ -24,6 +25,7 @@ function App() {
   const [prescriptionHash, setPrescriptionHash] = useState(null);
   const [doctorPubK, setDoctorPublicKey] = useState(null);
   const [doctorPrivK, setDoctorPrivateKey] = useState(null);
+  const [patientAddress, setPatientAddress] = useState(null);
   const [patientPublicKey, setPatientPublicKey] = useState(null);
   const [rdmNumber, setRdmNumber] = useState(null);
   const [patientPublicKeyValidity, setPatientPublicKeyValidity] = useState(false);
@@ -90,24 +92,28 @@ function App() {
           <GetDoctorPrivateKey setDotorPrivateKey={setDoctorPrivateKey} />
           </Box>
           <Box sx={{ my: 4 }}>
-            <GetPatientPublicKey setPatientPublicKey={setPatientPublicKey} />
+            <GetPatientAddress setPatientAddress={setPatientAddress} />
           </Box>
         </div>
       )}
 
-      {role === "Doctor" && doctorPrivK && imageString && (
+      {role === "Doctor" && doctorPrivK && imageString && patientAddress && (
         <Box sx={{ my: 4 }}>
           <SignAndHashFile
             imageString={imageString}
             doctorPrivK={doctorPrivK}
             setPrescriptionSigned={setPrescriptionSigned}
             setPrescriptionHash={setPrescriptionHash}
+            patientAddress={patientAddress}
           />
         </Box>
       )}
 
       {role === "Pharmacist" && (
         <div>
+          <Box sx={{ my: 4 }}>
+            <GetPatientPublicKey setPatientPublicKey={setPatientPublicKey} />
+          </Box>
           {patientPublicKey && (
             <div>
               <CheckPatientPublicKey setRdmNumber={setRdmNumber} patientPublicKey={patientPublicKey} setPatientPublicKeyValidity={setPatientPublicKeyValidity} />
@@ -123,9 +129,8 @@ function App() {
               <VerifyPrescriptionData
                 imageString={imageString}
                 doctorPublicKey={doctorPubK}
-                prescriptionHashBC={prescriptionHash}
-                prescriptionSignatureBC={prescriptionSigned}
                 setPrescriptionValid={setPrescriptionValid}
+                patientPublicKey={patientPublicKey}
               />
             </Box>
           )}
