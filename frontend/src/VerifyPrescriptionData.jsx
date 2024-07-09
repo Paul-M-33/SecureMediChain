@@ -4,17 +4,20 @@ import * as futils from './utils'
 
 const EthCrypto = require("eth-crypto");
 
-function VerifyPrescriptionData({ imageString, doctorPublicKey, prescriptionHashBC, prescriptionSignatureBC }) {
+function VerifyPrescriptionData({ imageString, doctorPublicKey, prescriptionHashBC, prescriptionSignatureBC, setPrescriptionValid }) {
   const [alertMessage, setAlertMessage] = useState(null);
 
   const HandlePatientDataVerification = () => {
 
+    let prescriptionValid = true;
+    setPrescriptionValid(false);
+    
     const prescriptionHashPharmaSide = EthCrypto.hash.keccak256(futils.arrayBufferToHex(imageString));
 
     // check hash
     if (prescriptionHashBC !== prescriptionHashPharmaSide) {
       setAlertMessage(<Alert severity="error">Hash verification failed. Prescription has been modified!</Alert>);
-      return false;
+      prescriptionValid = false;
     }
 
     const signerPublicKey = EthCrypto.recoverPublicKey(prescriptionSignatureBC, prescriptionHashPharmaSide);
@@ -22,11 +25,14 @@ function VerifyPrescriptionData({ imageString, doctorPublicKey, prescriptionHash
     // check prescription signature
     if (signerPublicKey !== doctorPublicKey) {
       setAlertMessage(<Alert severity="error">Signature verification failed. Prescription wasn't made by a doctor!</Alert>);
-      return false;
+      prescriptionValid = false;
     }
 
     setAlertMessage(<Alert severity="success">Prescription is valid!</Alert>);
-    return true;
+    
+    if (prescriptionValid) {
+      setPrescriptionValid(true);
+    }
   };
 
   return (

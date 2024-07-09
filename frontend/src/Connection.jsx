@@ -2,6 +2,9 @@ import { useState } from "react";
 import { Button, Typography, Box, CardContent, Card } from '@mui/material';
 const ethers = require("ethers");
 
+export let exportedSigner; // Variable to hold the signer to be exported
+
+
 function Web3ConnectionButton() {
   const [connected, setConnected] = useState(false);
   const [walletAddress, setWalletAddress] = useState("");
@@ -9,13 +12,20 @@ function Web3ConnectionButton() {
   async function connectWallet() {
     if (!connected) {
       const provider = new ethers.BrowserProvider(window.ethereum);
+
+      console.log(provider);
+
       const signer = await provider.getSigner();
+      exportedSigner = signer;
+
       const _walletAddress = await signer.getAddress();
+
       setConnected(true);
       setWalletAddress(_walletAddress);
     } else {
       setConnected(false);
       setWalletAddress("");
+      exportedSigner = null; // Reset the signer when disconnected
     }
   }
 

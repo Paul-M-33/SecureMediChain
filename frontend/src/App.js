@@ -10,11 +10,11 @@ import RoleDropdown from './SelectRole';
 import OwnerActions from './OwnerActions';
 import VerifyPrescriptionData from './VerifyPrescriptionData';
 import CheckPatientPublicKey from './CheckPatientPublicKey';
-
+import SetPrescriptionAsDelivered from './SetPrescriptionAsDelivered';
 import { useState, useEffect } from 'react';
 import { Container, Typography, Box, Paper } from '@mui/material';
-import logo from './logo.png';
 
+import logo from './logo.png';
 const EthCrypto = require('eth-crypto');
 
 function App() {
@@ -27,9 +27,10 @@ function App() {
   const [patientPublicKey, setPatientPublicKey] = useState(null);
   const [rdmNumber, setRdmNumber] = useState(null);
   const [patientPublicKeyValidity, setPatientPublicKeyValidity] = useState(false);
+  const [prescriptionValid, setPrescriptionValid] = useState(false);
   const [role, setRole] = useState('');
 
-  // TODO : delete this line (useful for tests only)
+  // TODO : delete the following lines (useful for tests only)
   let privateKeyHardhat2 = "59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d";
 
   useEffect(() => {
@@ -43,6 +44,7 @@ function App() {
   useEffect(() => {
     setImageString(null);
     setSelectedImage(null);
+    setPrescriptionValid(false);
   }, [role]);
 
   return (
@@ -61,7 +63,7 @@ function App() {
 
       {role === "Owner" && (
         <Box sx={{ my: 4 }}>
-          <OwnerActions />
+          <OwnerActions/>
         </Box>
       )}
 
@@ -123,9 +125,15 @@ function App() {
                 doctorPublicKey={doctorPubK}
                 prescriptionHashBC={prescriptionHash}
                 prescriptionSignatureBC={prescriptionSigned}
+                setPrescriptionValid={setPrescriptionValid}
               />
             </Box>
           )}
+          {prescriptionValid &&
+          <Box sx={{ my: 4 }}>
+            <SetPrescriptionAsDelivered />
+          </Box>
+          }
         </div>
       )}
     </Container>

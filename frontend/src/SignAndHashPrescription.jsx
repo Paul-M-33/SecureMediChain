@@ -25,7 +25,7 @@ function SignAndHashFile({ imageString, doctorPrivK, setPrescriptionSigned, setP
   return (
     <Box sx={{ my: 4, backgroundColor: '#fff', padding: '20px', borderRadius: '5px' }}>
       <Button variant="contained" onClick={handleSignAndHashClick}>
-        <Typography variant="button">Sign and Hash Prescription</Typography>
+        <Typography variant="button">Hash and Sign Prescription</Typography>
       </Button>
       {isDone && (
         <Box sx={{ mt: 2 }}>

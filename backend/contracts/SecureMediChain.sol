@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
  * @title SecureMediChain
  * @dev Store patient prescription data. They can be managed depending on different roles (doctor or pharamacist).
  */
-contract DataMediChain is Ownable {
+contract SecureMediChain is Ownable {
 
     struct PrescriptionData {
         bytes32 prescriptionHash;

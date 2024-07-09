@@ -1,0 +1,194 @@
+[
+    {
+        "inputs": [],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "previousOwner",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "newOwner",
+                "type": "address"
+            }
+        ],
+        "name": "OwnershipTransferred",
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_doctorAddress",
+                "type": "address"
+            }
+        ],
+        "name": "addDoctor",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_pharmacistAddress",
+                "type": "address"
+            }
+        ],
+        "name": "addPharmacist",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_patientAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "string",
+                "name": "_prescriptionSignature",
+                "type": "string"
+            },
+            {
+                "internalType": "bytes32",
+                "name": "_prescriptionHash",
+                "type": "bytes32"
+            }
+        ],
+        "name": "createNewPrescriptionData",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_patientAddress",
+                "type": "address"
+            }
+        ],
+        "name": "getPrescriptionData",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "bytes32",
+                        "name": "prescriptionHash",
+                        "type": "bytes32"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "prescriptionSignature",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "hasBeenProcessed",
+                        "type": "bool"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "prescriptionExist",
+                        "type": "bool"
+                    }
+                ],
+                "internalType": "struct SecureMediChain.PrescriptionData",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "owner",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_doctorAddress",
+                "type": "address"
+            }
+        ],
+        "name": "removeDoctor",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_pharmacistAddress",
+                "type": "address"
+            }
+        ],
+        "name": "removePharmacist",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_patientAddress",
+                "type": "address"
+            }
+        ],
+        "name": "setPrescriptionAsProcessed",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "doctors",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "pharmacists",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    }
+]

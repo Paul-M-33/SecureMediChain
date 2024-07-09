@@ -26,7 +26,7 @@ function AccountInfo({ role }) {
       )}
       {role === "Random User" && (
         <Typography variant="body2">
-          You can do nothing here.
+          You shall not pass 🧙‍♂️.
         </Typography>
       )}
     </Box>
