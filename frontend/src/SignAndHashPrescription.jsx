@@ -6,9 +6,9 @@ import MessageDialog from './MessageDialog';
 
 const EthCrypto = require("eth-crypto");
 
-function SignAndHashFile({ imageString, doctorPrivK, setPrescriptionSigned, setPrescriptionHash, patientAddress }) {
+function SignAndHashFile({ imageString, doctorPrivK, patientAddress, contractInstance }) {
 
-  const { createNewPrescriptionData } = useContractActions();
+  const { createNewPrescriptionData } = useContractActions(contractInstance);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMessage, setDialogMessage] = useState('');
@@ -19,10 +19,6 @@ function SignAndHashFile({ imageString, doctorPrivK, setPrescriptionSigned, setP
       const privateKey = doctorPrivK.toString("hex");
       const hash = EthCrypto.hash.keccak256(futils.arrayBufferToHex(imageString));
       const signature = EthCrypto.sign(privateKey, hash);
-
-      /* TODO : we can remove these lines as signature and hash are sent straight to blockchain */
-      setPrescriptionSigned(signature);
-      setPrescriptionHash(hash);
 
       try {
         await createNewPrescriptionData(patientAddress, signature, hash);

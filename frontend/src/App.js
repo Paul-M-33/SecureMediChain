@@ -1,6 +1,5 @@
 import './App.css';
 import AccountInfo from './AccountInfo';
-import { Web3ConnectionButton } from './Connection';
 import UploadFile from './UploadFile';
 import GetDoctorPublicKey from './GetDoctorPublicKey';
 import GetDoctorPrivateKey from './GetDoctorPrivateKey';
@@ -12,8 +11,11 @@ import OwnerActions from './OwnerActions';
 import VerifyPrescriptionData from './VerifyPrescriptionData';
 import CheckPatientPublicKey from './CheckPatientPublicKey';
 import SetPrescriptionAsDelivered from './SetPrescriptionAsDelivered';
+
+import { Web3ConnectionButton } from './Connection';
 import { useState, useEffect } from 'react';
 import { Container, Typography, Box, Paper } from '@mui/material';
+
 import logo6 from './logo6.png';
 
 const EthCrypto = require('eth-crypto');
@@ -21,8 +23,6 @@ const EthCrypto = require('eth-crypto');
 function App() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageString, setImageString] = useState(null);
-  const [prescriptionSigned, setPrescriptionSigned] = useState(null);
-  const [prescriptionHash, setPrescriptionHash] = useState(null);
   const [doctorPubK, setDoctorPublicKey] = useState(null);
   const [doctorPrivK, setDoctorPrivateKey] = useState(null);
   const [patientAddress, setPatientAddress] = useState(null);
@@ -40,18 +40,13 @@ function App() {
   const [isUserDoctor, setIsUserDoctor] = useState(false);
   const [isUserPharmacist, setIsUserPharmacist] = useState(false);
   
-  // determine user priviledges based on its address
+  // determine user priviledges based on his address
   useEffect(() => {
     const checkPrivileges = async () => {
       if (signer && ownerAddress && contractInstance) {
         const isOwner = (await signer.getAddress()) === ownerAddress;
         const doctorInWhiteList = await contractInstance.checkDoctorWhitelist(await signer.getAddress());
         const pharmacistInWhiteList = await contractInstance.checkPharmacistWhitelist(await signer.getAddress());
-
-        console.log('isOwner:', isOwner);
-        console.log('doctorInWhiteList:', doctorInWhiteList);
-        console.log('pharmacistInWhiteList:', pharmacistInWhiteList);
-        console.log('contract instance in App.js:', contractInstance);
 
         setIsUserOwner(isOwner);
         setIsUserDoctor(doctorInWhiteList);
@@ -63,7 +58,7 @@ function App() {
   }, [signer, ownerAddress, contractInstance]);
 
   // TODO : delete the following lines (useful for tests only)
-  let privateKeyHardhat2 = "59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d";
+  const privateKeyHardhat2 = "59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d";
 
   useEffect(() => {
     if (rdmNumber) {
@@ -71,7 +66,7 @@ function App() {
       const signature = EthCrypto.sign(privateKeyHardhat2, hashChallenge);
       console.log("patient signature to find to authentify public key:", signature);
     }
-  }, [rdmNumber, privateKeyHardhat2]);
+  }, [rdmNumber]);
 
   useEffect(() => {
     setImageString(null);
@@ -99,7 +94,7 @@ function App() {
         </Box>
       )}
 
-      {(role === "Doctor" || role === "Pharmacist") && (isUserDoctor || isUserPharmacist) && (
+      {((role === "Doctor" && isUserDoctor) || (role === "Pharmacist" && isUserPharmacist)) && (
         <div>
           <Box sx={{ my: 4 }}>
             <Typography variant="h6" component="h2" gutterBottom>
@@ -132,9 +127,8 @@ function App() {
           <SignAndHashFile
             imageString={imageString}
             doctorPrivK={doctorPrivK}
-            setPrescriptionSigned={setPrescriptionSigned}
-            setPrescriptionHash={setPrescriptionHash}
             patientAddress={patientAddress}
+            contractInstance={contractInstance}
           />
         </Box>
       )}
@@ -161,12 +155,13 @@ function App() {
                 doctorPublicKey={doctorPubK}
                 setPrescriptionValid={setPrescriptionValid}
                 patientPublicKey={patientPublicKey}
+                contractInstance={contractInstance}
               />
             </Box>
           )}
           {prescriptionValid &&
             <Box sx={{ my: 4 }}>
-              <SetPrescriptionAsDelivered />
+              <SetPrescriptionAsDelivered contractInstance={contractInstance}/>
             </Box>
           }
         </div>

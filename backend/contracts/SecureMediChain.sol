@@ -86,6 +86,3 @@ contract SecureMediChain is Ownable {
         prescriptions[_patientAddress].hasBeenProcessed = true;
     }
 }
-
-/* TODO : manage multiple prescriptions for a given patient ? array of prescriptions ? */
-/* TODO : timeout of prescription validity ? */

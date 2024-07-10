@@ -5,8 +5,8 @@ import { Button, Box } from '@mui/material';
 import MessageDialog from './MessageDialog';
 import { patientAddressExported } from './VerifyPrescriptionData';
 
-function SetPrescriptionAsDelivered() {
-  const { setPrescriptionAsProcessed } = useContractActions();
+function SetPrescriptionAsDelivered({contractInstance}) {
+  const { setPrescriptionAsProcessed } = useContractActions(contractInstance);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMessage, setDialogMessage] = useState('');

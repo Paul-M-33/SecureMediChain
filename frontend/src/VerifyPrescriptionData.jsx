@@ -8,9 +8,9 @@ const EthCrypto = require("eth-crypto");
 
 export let patientAddressExported = null;
 
-function VerifyPrescriptionData({ imageString, doctorPublicKey, setPrescriptionValid, patientPublicKey }) {
+function VerifyPrescriptionData({ imageString, doctorPublicKey, setPrescriptionValid, patientPublicKey, contractInstance }) {
 
-  const { getPrescriptionData, checkDoctorWhitelist } = useContractActions();
+  const { getPrescriptionData, checkDoctorWhitelist } = useContractActions(contractInstance);
   const [alertMessage, setAlertMessage] = useState(null);
 
   const HandlePatientDataVerification = async () => {
@@ -30,7 +30,6 @@ function VerifyPrescriptionData({ imageString, doctorPublicKey, setPrescriptionV
     let prescriptionExist = prescriptionData[3];
 
     const doctorAddress = EthCrypto.publicKey.toAddress(doctorPublicKey);
-    console.log("Doctor address is :"+doctorAddress);
 
     // loop to use break instructions to display the valid error message when needed
     for (let i = 0; i < 1; i++) {

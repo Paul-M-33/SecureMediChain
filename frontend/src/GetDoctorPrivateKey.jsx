@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { Typography, TextField, Button, Box } from '@mui/material';
 
-const EthCrypto = require('eth-crypto');
-
 function GetDoctorPrivateKey({ setDotorPrivateKey }) {
   const [textArea, setTextArea] = useState('');
 
@@ -12,9 +10,6 @@ function GetDoctorPrivateKey({ setDotorPrivateKey }) {
 
   const handleButtonClick = () => {
     setDotorPrivateKey(textArea);
-    console.log("Doctor public key from private key");
-    let pubk = EthCrypto.publicKeyByPrivateKey(textArea);
-    console.log(pubk);
   };
 
   return (
