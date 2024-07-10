@@ -3,7 +3,7 @@ import { useContractActions } from './ContractActionsComponent';
 import { TextField, Button, Box, MenuItem, Typography } from '@mui/material';
 import MessageDialog from './MessageDialog';
 
-function OwnerActions() {
+function OwnerActions({contractInstance}) {
   const { 
     addDoctor, 
     removeDoctor, 
@@ -14,7 +14,7 @@ function OwnerActions() {
     dialogMessage,
     dialogType,
     setDialogOpen 
-  } = useContractActions();
+  } = useContractActions(contractInstance);
 
   const [roleToAdd, setRoleToAdd] = useState('');
   const [keyStringValue, setKeyStringValue] = useState('');

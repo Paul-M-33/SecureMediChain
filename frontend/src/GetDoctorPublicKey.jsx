@@ -23,7 +23,7 @@ function GetDoctorPublicKey({ setDoctorPublicKey }) {
         fullWidth
         margin="normal"
         variant="outlined"
-        placeholder="Enter patient public key"
+        placeholder="Enter doctor public key"
       />
       <Button variant="contained" onClick={handleButtonClick} sx={{ mt: 2 }}>
         Send Doctor public key

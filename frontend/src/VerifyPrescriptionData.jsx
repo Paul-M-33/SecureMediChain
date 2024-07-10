@@ -10,7 +10,7 @@ export let patientAddressExported = null;
 
 function VerifyPrescriptionData({ imageString, doctorPublicKey, setPrescriptionValid, patientPublicKey }) {
 
-  const { getPrescriptionData } = useContractActions();
+  const { getPrescriptionData, checkDoctorWhitelist } = useContractActions();
   const [alertMessage, setAlertMessage] = useState(null);
 
   const HandlePatientDataVerification = async () => {
@@ -29,8 +29,19 @@ function VerifyPrescriptionData({ imageString, doctorPublicKey, setPrescriptionV
     let hasBeenProcessed = prescriptionData[2];
     let prescriptionExist = prescriptionData[3];
 
+    const doctorAddress = EthCrypto.publicKey.toAddress(doctorPublicKey);
+    console.log("Doctor address is :"+doctorAddress);
+
     // loop to use break instructions to display the valid error message when needed
     for (let i = 0; i < 1; i++) {
+
+      let doctorInWhiteList = await checkDoctorWhitelist(doctorAddress);
+      
+      if (!doctorInWhiteList) {
+        setAlertMessage(<Alert severity="error">Doctor is not in whitelist !</Alert>);
+        prescriptionValid = false;
+        break;
+      }
 
       if (!prescriptionExist) {
         setAlertMessage(<Alert severity="error">No prescription found for this patient address !</Alert>);
@@ -45,8 +56,6 @@ function VerifyPrescriptionData({ imageString, doctorPublicKey, setPrescriptionV
       }
       
       const prescriptionHashPharmaSide = EthCrypto.hash.keccak256(futils.arrayBufferToHex(imageString));
-
-      console.log("hash computed pharam side :"+prescriptionHashPharmaSide);
 
       // check hash
       if (prescriptionHashBC !== prescriptionHashPharmaSide) {

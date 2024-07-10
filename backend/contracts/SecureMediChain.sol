@@ -58,6 +58,14 @@ contract SecureMediChain is Ownable {
         pharmacists[_pharmacistAddress] = false;
     }
 
+    function checkDoctorWhitelist(address _doctorAddress) external view returns (bool) {
+        return doctors[_doctorAddress];
+    }
+
+    function checkPharmacistWhitelist(address _pharmacistAddress) external view returns (bool) {
+        return pharmacists[_pharmacistAddress];
+    }
+
     function createNewPrescriptionData(address _patientAddress, string memory _prescriptionSignature, bytes32 _prescriptionHash) external onlyDoctors {
         PrescriptionData memory prescriptionData;
         prescriptionData.prescriptionHash = _prescriptionHash;
@@ -79,6 +87,5 @@ contract SecureMediChain is Ownable {
     }
 }
 
-/* TODO : data accessibility ? private ? */
 /* TODO : manage multiple prescriptions for a given patient ? array of prescriptions ? */
 /* TODO : timeout of prescription validity ? */

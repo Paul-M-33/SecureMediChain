@@ -1,32 +1,11 @@
 /* implement blockchain interactions */
 
-import { ethers } from 'ethers';
-import { exportedSigner } from './Connection';
-import contractAbi from './contracts/SecureMediChainABI.json';
 import React, { useState } from 'react';
 import MessageDialog from './MessageDialog';
 
-let contractInstance;
-
-/* Replace with contract address */
-const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
-
 export let prescriptionData = [];
 
-export const getContract = () => {
-  if (!exportedSigner) {
-    throw new Error("Signer is not available. Make sure the wallet is connected.");
-  }
-  
-  if (!contractInstance) {
-    // Create the contract instance only if it doesn't exist
-    contractInstance = new ethers.Contract(contractAddress, contractAbi, exportedSigner);
-  }
-
-  return contractInstance;
-};
-
-export const useContractActions = () => {
+export const useContractActions = (contractInstance) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMessage, setDialogMessage] = useState('');
@@ -40,10 +19,10 @@ export const useContractActions = () => {
   };
 
   const addDoctor = async (doctorAddress) => {
-    const contract = getContract();
     try {
-      const tx = await contract.addDoctor(doctorAddress);
-      await tx.wait();
+      // add doctor to whitelist
+      const tx = await contractInstance.addDoctor(doctorAddress);
+      await tx.wait(); // Wait for the transaction to be done
       showDialog('success', 'Success', `Doctor <span class="highlighted">${doctorAddress}</span> added successfully`);
     } catch (error) {
       showDialog('error', 'Error', `Error adding doctor: ${error.message}`);
@@ -51,9 +30,8 @@ export const useContractActions = () => {
   };
 
   const removeDoctor = async (doctorAddress) => {
-    const contract = getContract();
     try {
-      const tx = await contract.removeDoctor(doctorAddress);
+      const tx = await contractInstance.removeDoctor(doctorAddress);
       await tx.wait();
       showDialog('success', 'Success', `Doctor <span class="highlighted">${doctorAddress}</span> removed successfully`);
     } catch (error) {
@@ -62,9 +40,8 @@ export const useContractActions = () => {
   };
 
   const addPharmacist = async (pharmacistAddress) => {
-    const contract = getContract();
     try {
-      const tx = await contract.addPharmacist(pharmacistAddress);
+      const tx = await contractInstance.addPharmacist(pharmacistAddress);
       await tx.wait();
       showDialog('success', 'Success', `Pharmacist <span class="highlighted">${pharmacistAddress}</span> added successfully`);
     } catch (error) {
@@ -73,9 +50,8 @@ export const useContractActions = () => {
   };
 
   const removePharmacist = async (pharmacistAddress) => {
-    const contract = getContract();
     try {
-      const tx = await contract.removePharmacist(pharmacistAddress);
+      const tx = await contractInstance.removePharmacist(pharmacistAddress);
       await tx.wait();
       showDialog('success', 'Success', `Pharmacist <span class="highlighted">${pharmacistAddress}</span> removed successfully`);
     } catch (error) {
@@ -83,10 +59,23 @@ export const useContractActions = () => {
     }
   };
 
+  const checkDoctorWhitelist = async (doctorAddress) => {
+    // Check if the doctor was added to the whitelist
+    let doctorInWhitelist = await contractInstance.checkDoctorWhitelist(doctorAddress);
+
+    return doctorInWhitelist;
+  };
+
+  const checkPharmacistWhitelist = async (pharmacistAddress) => {
+    // Check if the doctor was added to the whitelist
+    let pharmacistInWhitelist = await contractInstance.checkPharmacistWhitelist(pharmacistAddress);
+    
+    return pharmacistInWhitelist;
+  };
+
   const createNewPrescriptionData = async (patientAddress, prescriptionSignature, prescriptionHash) => {
-    const contract = getContract();
     try {
-      const tx = await contract.createNewPrescriptionData(patientAddress, prescriptionSignature, prescriptionHash);
+      const tx = await contractInstance.createNewPrescriptionData(patientAddress, prescriptionSignature, prescriptionHash);
       await tx.wait();
       showDialog('success', 'Success', 'Prescription data added to blockchain!');
     } catch (error) {
@@ -95,9 +84,8 @@ export const useContractActions = () => {
   };
 
   const getPrescriptionData = async (patientAddress) => {
-    const contract = getContract();
     try {
-      const data = await contract.getPrescriptionData(patientAddress);
+      const data = await contractInstance.getPrescriptionData(patientAddress);
       prescriptionData = [data[0], data[1], data[2], data[3]];
       showDialog('success', 'Success', 'Prescription retrieved from blockchain!');
     } catch (error) {
@@ -106,9 +94,8 @@ export const useContractActions = () => {
   };
 
   const setPrescriptionAsProcessed = async (patientAddress) => {
-    const contract = getContract();
     try {
-      const tx = await contract.setPrescriptionAsProcessed(patientAddress);
+      const tx = await contractInstance.setPrescriptionAsProcessed(patientAddress);
       await tx.wait();
       showDialog('success', 'Success', 'Prescription set as processed!');
     } catch (error) {
@@ -121,6 +108,8 @@ export const useContractActions = () => {
     removeDoctor,
     addPharmacist,
     removePharmacist,
+    checkDoctorWhitelist,
+    checkPharmacistWhitelist,
     createNewPrescriptionData,
     getPrescriptionData,
     setPrescriptionAsProcessed,
@@ -132,12 +121,14 @@ export const useContractActions = () => {
   };
 };
 
-const ContractActionsComponent = () => {
+const ContractActionsComponent = ({contractInstance}) => {
   const {
     addDoctor,
     removeDoctor,
     addPharmacist,
     removePharmacist,
+    checkDoctorWhitelist,
+    checkPharmacistWhitelist,
     createNewPrescriptionData,
     getPrescriptionData,
     setPrescriptionAsProcessed,
@@ -146,7 +137,7 @@ const ContractActionsComponent = () => {
     dialogMessage,
     dialogType,
     setDialogOpen,
-  } = useContractActions();
+  } = useContractActions(contractInstance);
 
   return (
     <div>

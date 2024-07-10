@@ -1,31 +1,48 @@
 import { useState } from "react";
 import { Button, Typography, Box, CardContent, Card } from '@mui/material';
-const ethers = require("ethers");
+import contractAbi from './contracts/SecureMediChainABI.json';
+import { ethers } from 'ethers';
 
-export let exportedSigner; // Variable to hold the signer to be exported
+const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
+export let exportedSigner = null;
+export let contractInstance = null;
 
-function Web3ConnectionButton() {
+export const Web3ConnectionButton = ({ setOwnerAddress, setSigner, setContractInstance }) => {
   const [connected, setConnected] = useState(false);
   const [walletAddress, setWalletAddress] = useState("");
 
   async function connectWallet() {
     if (!connected) {
       const provider = new ethers.BrowserProvider(window.ethereum);
-
-      console.log(provider);
-
       const signer = await provider.getSigner();
       exportedSigner = signer;
-
+      setSigner(signer);
+      
       const _walletAddress = await signer.getAddress();
-
       setConnected(true);
       setWalletAddress(_walletAddress);
+
+      // Create contract instance
+      if (!contractInstance) {
+        const contract = new ethers.Contract(contractAddress, contractAbi, exportedSigner);
+        contractInstance = contract;
+        await setContractInstance(contract);
+
+        try {
+          const _ownerAddress = await contractInstance.owner();
+          setOwnerAddress(_ownerAddress);
+        } catch (error) {
+          console.error('Error fetching owner:', error);
+        }
+      }
     } else {
       setConnected(false);
       setWalletAddress("");
-      exportedSigner = null; // Reset the signer when disconnected
+      exportedSigner = null;
+      contractInstance = null;
+      setSigner(null);
+      setContractInstance(null);
     }
   }
 
@@ -55,6 +72,4 @@ function Web3ConnectionButton() {
       )}
     </Box>
   );
-}
-
-export default Web3ConnectionButton;
+};

@@ -1,6 +1,6 @@
 import './App.css';
 import AccountInfo from './AccountInfo';
-import Web3ConnectionButton from './Connection';
+import { Web3ConnectionButton } from './Connection';
 import UploadFile from './UploadFile';
 import GetDoctorPublicKey from './GetDoctorPublicKey';
 import GetDoctorPrivateKey from './GetDoctorPrivateKey';
@@ -14,8 +14,8 @@ import CheckPatientPublicKey from './CheckPatientPublicKey';
 import SetPrescriptionAsDelivered from './SetPrescriptionAsDelivered';
 import { useState, useEffect } from 'react';
 import { Container, Typography, Box, Paper } from '@mui/material';
+import logo6 from './logo6.png';
 
-import logo from './logo.png';
 const EthCrypto = require('eth-crypto');
 
 function App() {
@@ -31,6 +31,36 @@ function App() {
   const [patientPublicKeyValidity, setPatientPublicKeyValidity] = useState(false);
   const [prescriptionValid, setPrescriptionValid] = useState(false);
   const [role, setRole] = useState('');
+
+  const [ownerAddress, setOwnerAddress] = useState(null);
+  const [signer, setSigner] = useState(null);
+  const [contractInstance, setContractInstance] = useState(null);
+
+  const [isUserOwner, setIsUserOwner] = useState(false);
+  const [isUserDoctor, setIsUserDoctor] = useState(false);
+  const [isUserPharmacist, setIsUserPharmacist] = useState(false);
+  
+  // determine user priviledges based on its address
+  useEffect(() => {
+    const checkPrivileges = async () => {
+      if (signer && ownerAddress && contractInstance) {
+        const isOwner = (await signer.getAddress()) === ownerAddress;
+        const doctorInWhiteList = await contractInstance.checkDoctorWhitelist(await signer.getAddress());
+        const pharmacistInWhiteList = await contractInstance.checkPharmacistWhitelist(await signer.getAddress());
+
+        console.log('isOwner:', isOwner);
+        console.log('doctorInWhiteList:', doctorInWhiteList);
+        console.log('pharmacistInWhiteList:', pharmacistInWhiteList);
+        console.log('contract instance in App.js:', contractInstance);
+
+        setIsUserOwner(isOwner);
+        setIsUserDoctor(doctorInWhiteList);
+        setIsUserPharmacist(pharmacistInWhiteList);
+      }
+    };
+
+    checkPrivileges();
+  }, [signer, ownerAddress, contractInstance]);
 
   // TODO : delete the following lines (useful for tests only)
   let privateKeyHardhat2 = "59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d";
@@ -53,29 +83,29 @@ function App() {
     <Container maxWidth="md">
       <Box sx={{ my: 4, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Box>
-          <img src={logo} alt="Logo" style={{ maxWidth: '200px', marginRight: '20px' }} />
+          <img src={logo6} alt="Logo" style={{ maxWidth: '300px', marginRight: '20px' }} />
           <Typography variant="h4" component="h1" gutterBottom>
             SecureMediChain
           </Typography>
         </Box>
         <RoleDropdown setRole={setRole} />
       </Box>
-      <Web3ConnectionButton />
+      <Web3ConnectionButton setOwnerAddress={setOwnerAddress} setSigner={setSigner} setContractInstance={setContractInstance} />
       <AccountInfo role={role} />
 
-      {role === "Owner" && (
+      {role === "Owner" && isUserOwner && (
         <Box sx={{ my: 4 }}>
-          <OwnerActions/>
+          <OwnerActions contractInstance={contractInstance}/>
         </Box>
       )}
 
-      {(role === "Doctor" || role === "Pharmacist") && (
+      {(role === "Doctor" || role === "Pharmacist") && (isUserDoctor || isUserPharmacist) && (
         <div>
           <Box sx={{ my: 4 }}>
             <Typography variant="h6" component="h2" gutterBottom>
               Upload a Prescription
             </Typography>
-            <UploadFile setImageString={setImageString} setSelectedImage={setSelectedImage}/>
+            <UploadFile setImageString={setImageString} setSelectedImage={setSelectedImage} />
             {selectedImage && (
               <Paper sx={{ p: 2, my: 2 }}>
                 <Typography variant="h6">Selected prescription:</Typography>
@@ -86,10 +116,10 @@ function App() {
         </div>
       )}
 
-      {role === "Doctor" && (
+      {role === "Doctor" && isUserDoctor && (
         <div>
           <Box sx={{ my: 4 }}>
-          <GetDoctorPrivateKey setDotorPrivateKey={setDoctorPrivateKey} />
+            <GetDoctorPrivateKey setDotorPrivateKey={setDoctorPrivateKey} />
           </Box>
           <Box sx={{ my: 4 }}>
             <GetPatientAddress setPatientAddress={setPatientAddress} />
@@ -97,7 +127,7 @@ function App() {
         </div>
       )}
 
-      {role === "Doctor" && doctorPrivK && imageString && patientAddress && (
+      {role === "Doctor" && isUserDoctor && doctorPrivK && imageString && patientAddress && (
         <Box sx={{ my: 4 }}>
           <SignAndHashFile
             imageString={imageString}
@@ -109,7 +139,7 @@ function App() {
         </Box>
       )}
 
-      {role === "Pharmacist" && (
+      {role === "Pharmacist" && isUserPharmacist && (
         <div>
           <Box sx={{ my: 4 }}>
             <GetPatientPublicKey setPatientPublicKey={setPatientPublicKey} />
@@ -120,10 +150,10 @@ function App() {
               <Box sx={{ my: 4 }}></Box>
             </div>
           )}
-            <div>
-              <GetDoctorPublicKey setDoctorPublicKey={setDoctorPublicKey} />
-              <Box sx={{ my: 4 }}></Box>
-            </div>
+          <div>
+            <GetDoctorPublicKey setDoctorPublicKey={setDoctorPublicKey} />
+            <Box sx={{ my: 4 }}></Box>
+          </div>
           {patientPublicKeyValidity && doctorPubK && (
             <Box sx={{ my: 4 }}>
               <VerifyPrescriptionData
@@ -135,9 +165,9 @@ function App() {
             </Box>
           )}
           {prescriptionValid &&
-          <Box sx={{ my: 4 }}>
-            <SetPrescriptionAsDelivered />
-          </Box>
+            <Box sx={{ my: 4 }}>
+              <SetPrescriptionAsDelivered />
+            </Box>
           }
         </div>
       )}
