@@ -1,0 +1,70 @@
+Test results :
+
+
+PS C:\Users\nejme\OneDrive\Bureau\SecureMediChain\backend> npx hardhat coverage
+
+Version
+=======
+> solidity-coverage: v0.8.12
+
+Instrumenting for coverage...
+=============================
+
+> SecureMediChain.sol
+
+Compilation:
+============
+
+Compiled 3 Solidity files successfully (evm target: paris).
+
+Network Info
+============
+> HardhatEVM: v2.22.6
+> network:    hardhat
+
+
+
+  DataMediChain
+    Doctor management
+      ✔ Owner should be able to add and remove doctors
+      ✔ Non-owner should not be able to add or remove doctors
+      ✔ Should be able to check if a doctor is in the whitelist
+    Pharmacist management
+      ✔ Owner should be able to add and remove pharmacists
+      ✔ Non-owner should not be able to add or remove pharmacists
+      ✔ Should be able to check if a pharmacist is in the whitelist
+    Prescription management
+      ✔ Doctor should be able to create a new prescription
+      ✔ Pharmacist should be able to mark a prescription as processed
+      ✔ Non-doctor should not be able to create a new prescription
+      ✔ Non-pharmacist should not be able to mark a prescription as processed
+      ✔ Doctor and pharmacist should be able to view a new prescription
+      ✔ Doctor and pharmacist should be able to view a prescription marked as processed
+      ✔ Non-doctor and non-pharmacist should not be able to view a prescription
+      ✔ Doctor should be able to replace a prescription by a new one
+      ✔ Pharmacist should not be able to mark a non-existent prescription as processed
+      ✔ Pharmacist should not mark an already processed prescription as processed again
+
+
+  16 passing (703ms)
+
+----------------------|----------|----------|----------|----------|----------------|
+File                  |  % Stmts | % Branch |  % Funcs |  % Lines |Uncovered Lines |
+----------------------|----------|----------|----------|----------|----------------|
+ contracts\           |      100 |    96.43 |      100 |      100 |                |
+  SecureMediChain.sol |      100 |    96.43 |      100 |      100 |                |
+File                  |  % Stmts | % Branch |  % Funcs |  % Lines |Uncovered Lines |
+----------------------|----------|----------|----------|----------|----------------|
+ contracts\           |      100 |    96.43 |      100 |      100 |                |
+  SecureMediChain.sol |      100 |    96.43 |      100 |      100 |                |
+----------------------|----------|----------|----------|----------|----------------|
+ contracts\           |      100 |    96.43 |      100 |      100 |                |
+  SecureMediChain.sol |      100 |    96.43 |      100 |      100 |                |
+ contracts\           |      100 |    96.43 |      100 |      100 |                |
+  SecureMediChain.sol |      100 |    96.43 |      100 |      100 |                |
+  SecureMediChain.sol |      100 |    96.43 |      100 |      100 |                |
+----------------------|----------|----------|----------|----------|----------------|
+All files             |      100 |    96.43 |      100 |      100 |                |
+----------------------|----------|----------|----------|----------|----------------|
+
+> Istanbul reports written to ./coverage/ and ./coverage.json
