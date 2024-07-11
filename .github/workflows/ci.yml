@@ -29,5 +29,5 @@ jobs:
     - name: Install dependencies and run tests for backend
       run: |
         cd backend
-        npm install
+        npm install --legacy-peer-deps
         npm test
