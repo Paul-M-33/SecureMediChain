@@ -23,11 +23,11 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: Navigate to project directory
-      run: cd backend
+    - name: Show Node.js version
+      run: node --version
 
-    - name: Install dependencies
-      run: npm install
-
-    - name: Run tests
-      run: npm test
+    - name: Install dependencies and run tests for backend
+      run: |
+        cd backend
+        npm install
+        npm test
