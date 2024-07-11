@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "react-axios": "^2.0.6",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@mui/material": "^5.16.0",
@@ -31,7 +32,6 @@
     "proxy-from-env": "^1.1.0",
     "random": "^4.1.0",
     "react": "^18.3.1",
-    "react-axios": "^2.0.6",
     "react-dom": "^18.3.1",
     "react-scripts": "5.0.1",
     "scrypt-js": "^3.0.1",
