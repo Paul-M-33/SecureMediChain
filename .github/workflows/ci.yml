@@ -30,4 +30,4 @@ jobs:
       run: |
         cd backend
         npm install --legacy-peer-deps
-        npm test
+        npx hardhat test
