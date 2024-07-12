@@ -32,36 +32,36 @@ jobs:
         npm install --legacy-peer-deps
         npx hardhat test
 
-slither:
-    runs-on: ubuntu-latest
+  slither:
+      runs-on: ubuntu-latest
 
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
 
-    - name: Install solc-select
-      run: |
-        sudo add-apt-repository ppa:ethereum/ethereum
-        sudo apt-get update
-        sudo apt-get install solc
-        pip install solc-select
-        solc-select install 0.8.24
-        solc-select use 0.8.24
+      - name: Install solc-select
+        run: |
+          sudo add-apt-repository ppa:ethereum/ethereum
+          sudo apt-get update
+          sudo apt-get install solc
+          pip install solc-select
+          solc-select install 0.8.24
+          solc-select use 0.8.24
 
-    - name: Install Slither
-      run: pip install slither-analyzer
+      - name: Install Slither
+        run: pip install slither-analyzer
 
-    - name: Install Hardhat dependencies
-      run: |
-        cd backend
-        npm install --legacy-peer-deps
+      - name: Install Hardhat dependencies
+        run: |
+          cd backend
+          npm install --legacy-peer-deps
 
-    - name: Run Slither
-      run: |
-        cd backend
-        slither . --solc-args="--allow-paths . --base-path ."
+      - name: Run Slither
+        run: |
+          cd backend
+          slither . --solc-args="--allow-paths . --base-path ."
