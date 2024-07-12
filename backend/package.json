@@ -28,6 +28,7 @@
     "ethers": "^6.13.1",
     "hardhat": "^2.22.6",
     "hardhat-gas-reporter": "^1.0.8",
+    "lint": "^0.8.19",
     "solidity-coverage": "^0.8.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.3"

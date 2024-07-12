@@ -39,8 +39,8 @@ function App() {
   const [isUserOwner, setIsUserOwner] = useState(false);
   const [isUserDoctor, setIsUserDoctor] = useState(false);
   const [isUserPharmacist, setIsUserPharmacist] = useState(false);
-  
-  // determine user priviledges based on his address
+
+  // determine user privileges based on their address
   useEffect(() => {
     const checkPrivileges = async () => {
       if (signer && ownerAddress && contractInstance) {
@@ -57,14 +57,14 @@ function App() {
     checkPrivileges();
   }, [signer, ownerAddress, contractInstance]);
 
-  // TODO : delete the following lines (useful for tests only)
-  const privateKeyHardhat2 = "59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d";
+  // TODO: delete the following lines (useful for tests only)
+  const patientPrivateKey = "59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d";
 
   useEffect(() => {
     if (rdmNumber) {
       const hashChallenge = EthCrypto.hash.keccak256(rdmNumber.toString());
-      const signature = EthCrypto.sign(privateKeyHardhat2, hashChallenge);
-      console.log("patient signature to find to authentify public key:", signature);
+      const signature = EthCrypto.sign(patientPrivateKey, hashChallenge);
+      console.log("patient signature to find to authenticate public key:", signature);
     }
   }, [rdmNumber]);
 
@@ -76,12 +76,12 @@ function App() {
 
   return (
     <Container maxWidth="md">
+      <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold', color: 'black', letterSpacing: '0.01em', textAlign: 'center', my: 2 }}>
+        SecureMediChain
+      </Typography>
       <Box sx={{ my: 4, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Box>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <img src={logo6} alt="Logo" style={{ maxWidth: '300px', marginRight: '20px' }} />
-          <Typography variant="h4" component="h1" gutterBottom>
-            SecureMediChain
-          </Typography>
         </Box>
         <RoleDropdown setRole={setRole} />
       </Box>
@@ -114,7 +114,7 @@ function App() {
       {role === "Doctor" && isUserDoctor && (
         <div>
           <Box sx={{ my: 4 }}>
-            <GetDoctorPrivateKey setDotorPrivateKey={setDoctorPrivateKey} />
+            <GetDoctorPrivateKey setDoctorPrivateKey={setDoctorPrivateKey} />
           </Box>
           <Box sx={{ my: 4 }}>
             <GetPatientAddress setPatientAddress={setPatientAddress} />

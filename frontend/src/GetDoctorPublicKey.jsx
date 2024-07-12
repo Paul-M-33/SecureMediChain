@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Typography, TextField, Button, Box } from '@mui/material';
+import { Typography, TextField, Button, Box, Alert } from '@mui/material';
 
 function GetDoctorPublicKey({ setDoctorPublicKey }) {
   const [textArea, setTextArea] = useState('');
+  const [alertMessage, setAlertMessage] = useState(null);
 
   const handleTextChange = (event) => {
     setTextArea(event.target.value);
@@ -10,6 +11,7 @@ function GetDoctorPublicKey({ setDoctorPublicKey }) {
 
   const handleButtonClick = () => {
     setDoctorPublicKey(textArea);
+    setAlertMessage(<Alert severity="success">Done</Alert>);
   };
 
   return (
@@ -28,6 +30,11 @@ function GetDoctorPublicKey({ setDoctorPublicKey }) {
       <Button variant="contained" onClick={handleButtonClick} sx={{ mt: 2 }}>
         Send Doctor public key
       </Button>
+      {alertMessage && (
+        <Box sx={{ mt: 2 }}>
+          {alertMessage}
+        </Box>
+      )}
     </Box>
   );
 }

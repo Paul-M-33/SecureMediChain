@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Typography, TextField, Button, Box } from '@mui/material';
+import { Typography, TextField, Button, Box, Alert } from '@mui/material';
 
 function GetPatientAddress({ setPatientAddress }) {
   const [textArea, setTextArea] = useState('');
+  const [alertMessage, setAlertMessage] = useState(null);
 
   const handleTextChange = (event) => {
     setTextArea(event.target.value);
@@ -10,6 +11,7 @@ function GetPatientAddress({ setPatientAddress }) {
 
   const handleButtonClick = () => {
     setPatientAddress(textArea);
+    setAlertMessage(<Alert severity="success">Done</Alert>);
   };
 
   return (
@@ -28,6 +30,11 @@ function GetPatientAddress({ setPatientAddress }) {
       <Button variant="contained" onClick={handleButtonClick} sx={{ mt: 2 }}>
         Send patient address
       </Button>
+      {alertMessage && (
+        <Box sx={{ mt: 2 }}>
+          {alertMessage}
+        </Box>
+      )}
     </Box>
   );
 }

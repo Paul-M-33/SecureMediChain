@@ -20,12 +20,17 @@ export const useContractActions = (contractInstance) => {
 
   const addDoctor = async (doctorAddress) => {
     try {
-      // add doctor to whitelist
+      // Add doctor to whitelist
       const tx = await contractInstance.addDoctor(doctorAddress);
       await tx.wait(); // Wait for the transaction to be done
       showDialog('success', 'Success', `Doctor <span class="highlighted">${doctorAddress}</span> added successfully`);
     } catch (error) {
-      showDialog('error', 'Error', `Error adding doctor: ${error.message}`);
+      if (error.code === 4001) {
+        // User rejected the transaction
+        showDialog('error', 'Transaction Rejected', 'You have rejected the transaction.');
+      } else {
+        showDialog('error', 'Error', `Error adding doctor: ${error.message}`);
+      }
     }
   };
 
@@ -35,27 +40,57 @@ export const useContractActions = (contractInstance) => {
       await tx.wait();
       showDialog('success', 'Success', `Doctor <span class="highlighted">${doctorAddress}</span> removed successfully`);
     } catch (error) {
-      showDialog('error', 'Error', `Error removing doctor: ${error.message}`);
+      if (error.code === 4001) {
+        // User rejected the transaction
+        showDialog('error', 'Transaction Rejected', 'You have rejected the transaction.');
+      } else {
+        showDialog('error', 'Error', `Error removing doctor: ${error.message}`);
+      }
     }
   };
-
+  
   const addPharmacist = async (pharmacistAddress) => {
     try {
       const tx = await contractInstance.addPharmacist(pharmacistAddress);
       await tx.wait();
       showDialog('success', 'Success', `Pharmacist <span class="highlighted">${pharmacistAddress}</span> added successfully`);
     } catch (error) {
-      showDialog('error', 'Error', `Error adding pharmacist: ${error.message}`);
+      if (error.code === 4001) {
+        // User rejected the transaction
+        showDialog('error', 'Transaction Rejected', 'You have rejected the transaction.');
+      } else {
+        showDialog('error', 'Error', `Error adding pharmacist: ${error.message}`);
+      }
     }
   };
-
+  
   const removePharmacist = async (pharmacistAddress) => {
     try {
       const tx = await contractInstance.removePharmacist(pharmacistAddress);
       await tx.wait();
       showDialog('success', 'Success', `Pharmacist <span class="highlighted">${pharmacistAddress}</span> removed successfully`);
     } catch (error) {
-      showDialog('error', 'Error', `Error removing pharmacist: ${error.message}`);
+      if (error.code === 4001) {
+        // User rejected the transaction
+        showDialog('error', 'Transaction Rejected', 'You have rejected the transaction.');
+      } else {
+        showDialog('error', 'Error', `Error removing pharmacist: ${error.message}`);
+      }
+    }
+  };
+  
+  const createNewPrescriptionData = async (patientAddress, prescriptionSignature, prescriptionHash) => {
+    try {
+      const tx = await contractInstance.createNewPrescriptionData(patientAddress, prescriptionSignature, prescriptionHash);
+      await tx.wait();
+      showDialog('success', 'Success', 'Prescription data added to blockchain!');
+    } catch (error) {
+      if (error.code === 4001) {
+        // User rejected the transaction
+        showDialog('error', 'Transaction Rejected', 'You have rejected the transaction.');
+      } else {
+        showDialog('error', 'Error', `Error adding prescription data: ${error.message}`);
+      }
     }
   };
 
@@ -71,16 +106,6 @@ export const useContractActions = (contractInstance) => {
     let pharmacistInWhitelist = await contractInstance.checkPharmacistWhitelist(pharmacistAddress);
     
     return pharmacistInWhitelist;
-  };
-
-  const createNewPrescriptionData = async (patientAddress, prescriptionSignature, prescriptionHash) => {
-    try {
-      const tx = await contractInstance.createNewPrescriptionData(patientAddress, prescriptionSignature, prescriptionHash);
-      await tx.wait();
-      showDialog('success', 'Success', 'Prescription data added to blockchain!');
-    } catch (error) {
-      showDialog('error', 'Error', `Error adding prescription data: ${error.message}`);
-    }
   };
 
   const getPrescriptionData = async (patientAddress) => {
@@ -99,7 +124,12 @@ export const useContractActions = (contractInstance) => {
       await tx.wait();
       showDialog('success', 'Success', 'Prescription set as processed!');
     } catch (error) {
-      showDialog('error', 'Error', `Error changing prescription state: ${error.message}`);
+      if (error.code === 4001) {
+        // User rejected the transaction
+        showDialog('error', 'Transaction Rejected', 'You have rejected the transaction.');
+      } else {
+        showDialog('error', 'Error', `Error changing prescription state: ${error.message}`);
+      }
     }
   };
 

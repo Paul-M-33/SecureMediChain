@@ -39,7 +39,7 @@ function SignAndHashFile({ imageString, doctorPrivK, patientAddress, contractIns
   return (
     <Box sx={{ my: 4, backgroundColor: '#fff', padding: '20px', borderRadius: '5px' }}>
       <Button variant="contained" onClick={handleSignAndHashClick}>
-        <Typography variant="button">Send to Blockchain Hash and Signature Prescription</Typography>
+        <Typography variant="button">Send to Blockchain Prescription Hash and Signature</Typography>
       </Button>
       <MessageDialog open={dialogOpen} onClose={() => setDialogOpen(false)} title={dialogTitle} message={dialogMessage} type={dialogType} />
     </Box>
