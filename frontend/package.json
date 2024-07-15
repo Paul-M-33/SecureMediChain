@@ -70,11 +70,16 @@
     ]
   },
   "devDependencies": {
+    "@eslint/compat": "^1.1.1",
+    "@eslint/js": "^9.7.0",
     "assert": "^2.1.0",
     "browser-resolve": "^2.0.0",
     "buffer": "^6.0.3",
     "customize-cra": "^1.0.0",
     "detective": "^5.2.1",
+    "eslint": "^9.7.0",
+    "eslint-plugin-react": "^7.34.4",
+    "globals": "^15.8.0",
     "process": "^0.11.10",
     "react-app-rewired": "^2.2.1"
   }

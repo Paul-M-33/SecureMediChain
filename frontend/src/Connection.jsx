@@ -4,11 +4,11 @@ import { ethers } from 'ethers';
 import contractAbi from './contracts/SecureMediChainABI.json';
 
 // hardhat contract address
-// const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
 // sepolia contract address
-const contractAddress = "0x21b7250a234CEAc50efd2C62fa110D232bc41E9F";
-const INFURA_PROJECT_ID = "04fbac3771a742b8a64409c30fb5fa29";
+// const contractAddress = "0x21b7250a234CEAc50efd2C62fa110D232bc41E9F";
+// const INFURA_PROJECT_ID = "04fbac3771a742b8a64409c30fb5fa29";
 
 export let exportedSigner = null;
 export let contractInstance = null;

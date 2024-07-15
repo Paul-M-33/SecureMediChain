@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Typography, TextField, Button, Box, Alert } from '@mui/material';
 
-function GetDoctorPrivateKey({ setDotorPrivateKey }) {
+function GetDoctorPrivateKey({ setDoctorPrivateKey }) {
   const [textArea, setTextArea] = useState('');
   const [alertMessage, setAlertMessage] = useState(null);
 
@@ -10,7 +10,7 @@ function GetDoctorPrivateKey({ setDotorPrivateKey }) {
   };
 
   const handleButtonClick = () => {
-    setDotorPrivateKey(textArea);
+    setDoctorPrivateKey(textArea);
     setAlertMessage(<Alert severity="success">Done</Alert>);
   };
 

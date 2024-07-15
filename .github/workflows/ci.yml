@@ -65,3 +65,15 @@ jobs:
         run: |
           cd backend
           slither . --solc-args="--allow-paths . --base-path ."
+
+      - name: Install dependencies and run ESLint for backend
+        run: |
+            cd backend
+            npm install --legacy-peer-deps
+            npx eslint . --ext .js,.jsx,.ts,.tsx
+    
+      - name: Install dependencies and run ESLint for frontend
+        run: |
+          cd frontend
+          npm install --legacy-peer-deps
+          npx eslint . --ext .js,.jsx,.ts,.tsx

@@ -25,6 +25,7 @@ function RoleDropdown({ setRole }) {
         <MenuItem value="Owner">Admin</MenuItem>
         <MenuItem value="Doctor">Doctor</MenuItem>
         <MenuItem value="Pharmacist">Pharmacist</MenuItem>
+        <MenuItem value="Random User">Random User</MenuItem>
       </TextField>
     </Box>
   );
