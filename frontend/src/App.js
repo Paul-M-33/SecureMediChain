@@ -58,7 +58,13 @@ function App() {
   }, [signer, ownerAddress, contractInstance]);
 
   // TODO: delete the following lines (useful for tests only)
-  const patientPrivateKey = "59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d";
+  const patientPrivateKey = "47e179ec197488593b187f80a00eb0da91f1b9d0b13f8733639f19c30a34926a";
+
+  const patPublicKey = EthCrypto.publicKeyByPrivateKey(patientPrivateKey.toString());
+  console.log(patPublicKey);
+
+  const patAddress = EthCrypto.publicKey.toAddress(patPublicKey.toString());
+  console.log(patAddress.toString());
 
   useEffect(() => {
     if (rdmNumber) {
