@@ -17,3 +17,5 @@ For this project, I attempted to provide a solution to each of the previously me
 4. Once the medications are dispensed, the pharmacist marks the prescription as dispensed on the blockchain. They first verify that the prescription presented by the patient has not already been used.
 5. The doctor stores on the blockchain the date when the prescription has been delivered. The pharamacist then computes the elapsed time since the prescription was delivered.
 6. The prescription is never stored on the blockchain. It is transmitted to the patient, and only the patient is responsible for the disclosure of the data it contains. Additionally, none of the data stored on the blockchain are critical (neither private keys nor medical data in plaintext).
+   
+<img width="959" alt="main_page_SMC" src="https://github.com/user-attachments/assets/1d7f753e-ed27-43e8-8613-b6f47a4e227f">
