@@ -1,12 +1,13 @@
 import { useContractActions } from './ContractActionsComponent';
 import React, { useState } from 'react';
 import { Typography, Button, Box } from '@mui/material';
-import * as futils from './utils';
+import * as futils from '../utils';
 import MessageDialog from './MessageDialog';
 
 const EthCrypto = require("eth-crypto");
+const ethers = require('ethers');
 
-function SignAndHashFile({ imageString, doctorPrivK, patientAddress, contractInstance }) {
+function SignAndHashFile({ imageString, patientAddress, contractInstance }) {
 
   const { createNewPrescriptionData } = useContractActions(contractInstance);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -15,13 +16,12 @@ function SignAndHashFile({ imageString, doctorPrivK, patientAddress, contractIns
   const [dialogType, setDialogType] = useState('success');
 
   const handleSignAndHashClick = async () => {
-    if (imageString && doctorPrivK) {
-      const privateKey = doctorPrivK.toString("hex");
+    if (imageString) {
       const hash = EthCrypto.hash.keccak256(futils.arrayBufferToHex(imageString));
-      const signature = EthCrypto.sign(privateKey, hash);
+      const dateInSecs = ethers.getBigInt(Math.floor(new Date().getTime() / 1000)); // number of seconds from Jan 1st, 1970, until now
 
       try {
-        await createNewPrescriptionData(patientAddress, signature, hash);
+        await createNewPrescriptionData(patientAddress, hash, dateInSecs);
         showDialog('success', 'Success', 'Hash and signature sent to blockchain successfully.');
       } catch (error) {
         showDialog('error', 'Error', `Error sending hash and signature to blockchain: ${error.message}`);

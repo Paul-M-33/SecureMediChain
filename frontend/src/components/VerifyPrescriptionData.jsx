@@ -2,15 +2,18 @@ import { useContractActions } from './ContractActionsComponent';
 import React, { useState } from 'react';
 import { Typography, Button, Box, Alert } from '@mui/material';
 import { prescriptionData } from './ContractActionsComponent';
-import * as futils from './utils'
+import * as futils from '../utils'
 
 const EthCrypto = require("eth-crypto");
+const ethers = require('ethers');
 
 export let patientAddressExported = null;
 
-function VerifyPrescriptionData({ imageString, doctorPublicKey, setPrescriptionValid, patientPublicKey, contractInstance }) {
+const secIn1Year = ethers.getBigInt(31536000);
 
-  const { getPrescriptionData, checkDoctorWhitelist } = useContractActions(contractInstance);
+function VerifyPrescriptionData({ imageString, setPrescriptionValid, patientPublicKey, contractInstance }) {
+
+  const { getPrescriptionData } = useContractActions(contractInstance);
   const [alertMessage, setAlertMessage] = useState(null);
 
   const HandlePatientDataVerification = async () => {
@@ -25,22 +28,12 @@ function VerifyPrescriptionData({ imageString, doctorPublicKey, setPrescriptionV
     await getPrescriptionData(patientAddress);
 
     let prescriptionHashBC = prescriptionData[0];
-    let prescriptionSignatureBC = prescriptionData[1];
+    let deliveryDate = ethers.getBigInt(prescriptionData[1]);
     let hasBeenProcessed = prescriptionData[2];
     let prescriptionExist = prescriptionData[3];
 
-    const doctorAddress = EthCrypto.publicKey.toAddress(doctorPublicKey);
-
     // loop to use break instructions to display the valid error message when needed
     for (let i = 0; i < 1; i++) {
-
-      let doctorInWhiteList = await checkDoctorWhitelist(doctorAddress);
-      
-      if (!doctorInWhiteList) {
-        setAlertMessage(<Alert severity="error">Doctor is not in whitelist !</Alert>);
-        prescriptionValid = false;
-        break;
-      }
 
       if (!prescriptionExist) {
         setAlertMessage(<Alert severity="error">No prescription found for this patient address !</Alert>);
@@ -63,11 +56,12 @@ function VerifyPrescriptionData({ imageString, doctorPublicKey, setPrescriptionV
         break;
       }
 
-      const signerPublicKey = EthCrypto.recoverPublicKey(prescriptionSignatureBC, prescriptionHashPharmaSide);
+      const currentTime = ethers.getBigInt(Math.floor(Date.now() / 1000));
+      const prescriptionAge = currentTime - deliveryDate;
 
-      // check prescription signature
-      if (signerPublicKey !== doctorPublicKey) {
-        setAlertMessage(<Alert severity="error">Signature verification failed. Prescription wasn't made by a doctor!</Alert>);
+      // check prescription date validity
+      if (prescriptionAge > secIn1Year) {
+        setAlertMessage(<Alert severity="error">Precription is outdated!</Alert>);
         prescriptionValid = false;
         break;
       }

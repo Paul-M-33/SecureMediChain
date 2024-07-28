@@ -79,9 +79,9 @@ export const useContractActions = (contractInstance) => {
     }
   };
   
-  const createNewPrescriptionData = async (patientAddress, prescriptionSignature, prescriptionHash) => {
+  const createNewPrescriptionData = async (patientAddress, prescriptionHash, deliveryDate) => {
     try {
-      const tx = await contractInstance.createNewPrescriptionData(patientAddress, prescriptionSignature, prescriptionHash);
+      const tx = await contractInstance.createNewPrescriptionData(patientAddress, prescriptionHash, deliveryDate);
       await tx.wait();
       showDialog('success', 'Success', 'Prescription data added to blockchain!');
     } catch (error) {

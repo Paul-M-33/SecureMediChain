@@ -1,4 +1,4 @@
-import './App.css';
+import '../App.css';
 import React, { useState } from 'react';
 import { useContractActions } from './ContractActionsComponent';
 import { Button, Box } from '@mui/material';

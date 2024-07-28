@@ -1,30 +1,26 @@
 import './App.css';
-import AccountInfo from './AccountInfo';
-import UploadFile from './UploadFile';
-import GetDoctorPublicKey from './GetDoctorPublicKey';
-import GetDoctorPrivateKey from './GetDoctorPrivateKey';
-import GetPatientAddress from './GetPatientAddress';
-import GetPatientPublicKey from './GetPatientPublicKey';
-import SignAndHashFile from './SignAndHashPrescription';
-import RoleDropdown from './SelectRole';
-import OwnerActions from './OwnerActions';
-import VerifyPrescriptionData from './VerifyPrescriptionData';
-import CheckPatientPublicKey from './CheckPatientPublicKey';
-import SetPrescriptionAsDelivered from './SetPrescriptionAsDelivered';
+import AccountInfo from './components/AccountInfo';
+import UploadFile from './components/UploadFile';
+import GetPatientAddress from './components/GetPatientAddress';
+import GetPatientPublicKey from './components/GetPatientPublicKey';
+import SignAndHashFile from './components/SignAndHashPrescription';
+import RoleDropdown from './components/SelectRole';
+import OwnerActions from './components/OwnerActions';
+import VerifyPrescriptionData from './components/VerifyPrescriptionData';
+import CheckPatientPublicKey from './components/CheckPatientPublicKey';
+import SetPrescriptionAsDelivered from './components/SetPrescriptionAsDelivered';
 
-import { Web3ConnectionButton } from './Connection';
+import { Web3ConnectionButton } from './components/Connection';
 import { useState, useEffect } from 'react';
 import { Container, Typography, Box, Paper } from '@mui/material';
 
-import logo6 from './logo6.png';
+import logoMain from './logo/logo_main_page.png';
 
 const EthCrypto = require('eth-crypto');
 
 function App() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageString, setImageString] = useState(null);
-  const [doctorPubK, setDoctorPublicKey] = useState(null);
-  const [doctorPrivK, setDoctorPrivateKey] = useState(null);
   const [patientAddress, setPatientAddress] = useState(null);
   const [patientPublicKey, setPatientPublicKey] = useState(null);
   const [rdmNumber, setRdmNumber] = useState(null);
@@ -60,12 +56,6 @@ function App() {
   // TODO: delete the following lines (useful for tests only)
   const patientPrivateKey = "47e179ec197488593b187f80a00eb0da91f1b9d0b13f8733639f19c30a34926a";
 
-  const patPublicKey = EthCrypto.publicKeyByPrivateKey(patientPrivateKey.toString());
-  console.log(patPublicKey);
-
-  const patAddress = EthCrypto.publicKey.toAddress(patPublicKey.toString());
-  console.log(patAddress.toString());
-
   useEffect(() => {
     if (rdmNumber) {
       const hashChallenge = EthCrypto.hash.keccak256(rdmNumber.toString());
@@ -87,7 +77,7 @@ function App() {
       </Typography>
       <Box sx={{ my: 4, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <img src={logo6} alt="Logo" style={{ maxWidth: '300px', marginRight: '20px' }} />
+          <img src={logoMain} alt="Logo" style={{ maxWidth: '300px', marginRight: '20px' }} />
         </Box>
         <RoleDropdown setRole={setRole} />
       </Box>
@@ -120,19 +110,15 @@ function App() {
       {role === "Doctor" && isUserDoctor && (
         <div>
           <Box sx={{ my: 4 }}>
-            <GetDoctorPrivateKey setDoctorPrivateKey={setDoctorPrivateKey} />
-          </Box>
-          <Box sx={{ my: 4 }}>
             <GetPatientAddress setPatientAddress={setPatientAddress} />
           </Box>
         </div>
       )}
 
-      {role === "Doctor" && isUserDoctor && doctorPrivK && imageString && patientAddress && (
+      {role === "Doctor" && isUserDoctor && imageString && patientAddress && (
         <Box sx={{ my: 4 }}>
           <SignAndHashFile
             imageString={imageString}
-            doctorPrivK={doctorPrivK}
             patientAddress={patientAddress}
             contractInstance={contractInstance}
           />
@@ -150,15 +136,10 @@ function App() {
               <Box sx={{ my: 4 }}></Box>
             </div>
           )}
-          <div>
-            <GetDoctorPublicKey setDoctorPublicKey={setDoctorPublicKey} />
-            <Box sx={{ my: 4 }}></Box>
-          </div>
-          {patientPublicKeyValidity && doctorPubK && (
+          {patientPublicKeyValidity && (
             <Box sx={{ my: 4 }}>
               <VerifyPrescriptionData
                 imageString={imageString}
-                doctorPublicKey={doctorPubK}
                 setPrescriptionValid={setPrescriptionValid}
                 patientPublicKey={patientPublicKey}
                 contractInstance={contractInstance}

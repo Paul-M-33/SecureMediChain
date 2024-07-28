@@ -12,7 +12,7 @@ contract SecureMediChain is Ownable {
 
     struct PrescriptionData {
         bytes32 prescriptionHash;
-        string prescriptionSignature;
+        uint256 deliveryDate;
         bool hasBeenProcessed;
         bool prescriptionExist;
     }
@@ -54,6 +54,11 @@ contract SecureMediChain is Ownable {
         _;
     }
 
+    event RegisteredAsDoctor(address _doctorAddress);
+    event RegisteredAsPharmacist(address _pharmacistAddress);
+    event RemovedFromDoctorList(address _doctorAddress);
+    event RemovedFromPharmacistList(address _pharmacistAddress);
+
     /**
      * @notice Add a doctor to the whitelist.
      * @dev Can only be called by the contract owner.
@@ -61,6 +66,7 @@ contract SecureMediChain is Ownable {
      */
     function addDoctor(address _doctorAddress) external onlyOwner {
         doctors[_doctorAddress] = true;
+        emit RegisteredAsDoctor(_doctorAddress);
     }
 
     /**
@@ -70,6 +76,7 @@ contract SecureMediChain is Ownable {
      */
     function removeDoctor(address _doctorAddress) external onlyOwner {
         doctors[_doctorAddress] = false;
+        emit RemovedFromDoctorList(_doctorAddress);
     }
 
     /**
@@ -79,6 +86,7 @@ contract SecureMediChain is Ownable {
      */
     function addPharmacist(address _pharmacistAddress) external onlyOwner {
         pharmacists[_pharmacistAddress] = true;
+        emit RegisteredAsPharmacist(_pharmacistAddress);
     }
 
     /**
@@ -88,6 +96,7 @@ contract SecureMediChain is Ownable {
      */
     function removePharmacist(address _pharmacistAddress) external onlyOwner {
         pharmacists[_pharmacistAddress] = false;
+        emit RemovedFromPharmacistList(_pharmacistAddress);
     }
 
     /**
@@ -112,13 +121,13 @@ contract SecureMediChain is Ownable {
      * @notice Create a new prescription data for a patient.
      * @dev Can only be called by doctors.
      * @param _patientAddress Address of the patient associated to these medical data.
-     * @param _prescriptionSignature Signature of the hash of the prescription.
      * @param _prescriptionHash Hash of the prescription.
+     * @param _deliveryDate The date when doctor emited the prescription.
      */
-    function createNewPrescriptionData(address _patientAddress, string memory _prescriptionSignature, bytes32 _prescriptionHash) external onlyDoctors {
+    function createNewPrescriptionData(address _patientAddress, bytes32 _prescriptionHash, uint256 _deliveryDate) external onlyDoctors {
         PrescriptionData memory prescriptionData;
         prescriptionData.prescriptionHash = _prescriptionHash;
-        prescriptionData.prescriptionSignature = _prescriptionSignature;
+        prescriptionData.deliveryDate = _deliveryDate;
         prescriptionData.hasBeenProcessed = false;
         prescriptionData.prescriptionExist = true;
         prescriptions[_patientAddress] = prescriptionData;

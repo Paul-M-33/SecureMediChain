@@ -1,0 +1,69 @@
+.MessageDialog {
+    background-color: #fff; /* White background */
+    padding: 20px;
+    border-radius: 5px;
+    position: fixed; /* Fixed position to center the dialog */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Center the dialog box */
+    z-index: 9999; /* Ensure it appears above other content */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3); /* Box shadow for a subtle effect */
+    animation: popUp 0.3s ease forwards;
+  }
+  
+  @keyframes popUp {
+    0% {
+      opacity: 0;
+      transform: translate(-50%, -60%); /* Slightly below the center initially */
+    }
+    100% {
+      opacity: 1;
+      transform: translate(-50%, -50%);
+    }
+  }
+  
+  .MessageDialog.success {
+    border: 2px solid #4caf50; /* Green border for success */
+  }
+  
+  .MessageDialog.error {
+    border: 2px solid #f44336; /* Red border for error */
+  }
+  
+  .MessageDialog h2 {
+    margin-bottom: 10px;
+  }
+  
+  .MessageDialog p {
+    margin-bottom: 20px;
+  }
+  
+  .MessageDialog button {
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .success-button {
+    background-color: #4caf50; /* Green button background for success */
+  }
+  
+  .success-button:hover {
+    background-color: #45a049; /* Darker green on hover */
+  }
+  
+  .error-button {
+    background-color: #f44336; /* Red button background for error */
+  }
+  
+  .error-button:hover {
+    background-color: #e53935; /* Darker red on hover */
+  }
+  
+  .MessageDialog .highlighted {
+    font-weight: bold;
+    color: #4caf50; /* Green color for highlighted address */
+  }
+  
