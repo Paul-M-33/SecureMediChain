@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button, Typography, Box, CardContent, Card } from '@mui/material';
 import { ethers } from 'ethers';
-import contractAbi from '../contracts/SecureMediChainABI_2.json';
+import contractAbi from '../contracts/SecureMediChainABI.json';
 
 // hardhat contract address
 const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
